@@ -15,7 +15,7 @@
 
 ## 安装
 
-1. 从 [Releases](https://github.com/cjiewong/reddit-comment-assistant/releases) 下载 `reddit-comment-assistant-0.1.0.zip`，解压到长期保留的文件夹。
+1. 从 [Releases](https://github.com/cjiewong/reddit-comment-assistant/releases) 下载 `reddit-comment-assistant-0.1.1.zip`，解压到长期保留的文件夹。
 2. 打开 `chrome://extensions`，启用“开发者模式”，点击“加载已解压的扩展程序”，选择含有 `manifest.json` 的解压目录。
 3. 点击扩展图标进入设置，填写接口地址、API Key 和完整模型名，选择接口类型，保存并授予该接口域名访问权限。
 4. 打开或刷新 `www.reddit.com` 上的帖子。在主评论框旁点击“生成并填入”；回复他人时先点击 Reddit 的 Reply。

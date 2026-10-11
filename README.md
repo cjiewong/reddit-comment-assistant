@@ -17,7 +17,7 @@ Draft a thoughtful Reddit reply with your own AI model, fill it into the comment
 
 ## Install
 
-1. Download `reddit-comment-assistant-0.1.0.zip` from [Releases](https://github.com/cjiewong/reddit-comment-assistant/releases) and extract it into a permanent folder.
+1. Download `reddit-comment-assistant-0.1.1.zip` from [Releases](https://github.com/cjiewong/reddit-comment-assistant/releases) and extract it into a permanent folder.
 2. Open `chrome://extensions`, enable **Developer mode**, select **Load unpacked**, and choose the extracted folder containing `manifest.json`.
 3. Click the extension icon to open settings. Enter your provider’s Base URL, API key and exact model ID. Select the matching API format, then save and grant access to that provider.
 4. Open or refresh a post on `https://www.reddit.com`. Click **Generate & fill** below the main composer, or click Reddit’s **Reply** first to reveal a reply composer.

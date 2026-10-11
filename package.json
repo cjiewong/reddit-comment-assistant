@@ -1,6 +1,6 @@
 {
   "name": "reddit-comment-assistant",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "description": "Bring your own AI model to draft Reddit replies with Chinese explanations.",
@@ -16,7 +16,7 @@
   "devDependencies": {
     "@types/chrome": "^0.0.287",
     "@types/node": "^22.0.0",
-    "esbuild": "^0.25.0",
+    "esbuild": "^0.28.2",
     "jsdom": "^26.0.0",
     "prettier": "^3.9.10",
     "typescript": "^5.8.0",

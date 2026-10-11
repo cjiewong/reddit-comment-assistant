@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Reddit Comment Assistant",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Draft Reddit comments with your own OpenAI-compatible model. Review English replies with Chinese explanations before posting.",
   "minimum_chrome_version": "120",
   "permissions": ["storage"],
@@ -10,8 +10,13 @@
     "http://localhost/*",
     "http://127.0.0.1/*"
   ],
-  "background": { "service_worker": "background.js", "type": "module" },
-  "action": { "default_title": "Reddit Comment Assistant settings" },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Reddit Comment Assistant settings"
+  },
   "options_page": "options.html",
   "content_scripts": [
     {

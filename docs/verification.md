@@ -1,4 +1,4 @@
-# Verification — v0.1.0
+# Verification — v0.1.1
 
 Date: 2026-10-11.
 
@@ -37,3 +37,5 @@ The built settings page was inspected at 760px and 390px widths in Chrome using 
 ## Remaining integration check
 
 A fully installed extension with a real provider API key has not been exercised in this environment. The current browser automation channel cannot load an unpacked extension through `chrome://extensions`, and no provider credential was supplied for this extension. After installation, configure your provider and generate one draft to verify your provider/model combination. These limitations are not represented as completed tests.
+
+The v0.1.1 patch aligns the build and test tooling on esbuild 0.28 so clean installations also resolve under the npm version bundled with Node.js 22 in GitHub Actions.
