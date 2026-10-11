@@ -44,19 +44,57 @@
             data-en="A bare domain automatically uses /v1. API prefixes and complete endpoint URLs are also accepted."
             data-zh="只填域名会自动补齐 /v1，也支持自定义 API 前缀或完整接口地址。"
           ></p>
-          <label data-label-en="Model name" data-label-zh="模型名称"
-            ><input
-              id="model"
-              required
-              placeholder="Enter the exact model ID from your provider" /></label
-          ><label
+          <label
             >API Key<input
               id="apiKey"
               type="password"
               autocomplete="off"
               required
-              placeholder="Your own API key" /></label
-          ><label class="check"
+              placeholder="Your own API key"
+          /></label>
+          <button
+            type="button"
+            id="fetchModels"
+            class="secondary"
+            data-en="Fetch models"
+            data-zh="拉取模型"
+          ></button>
+          <p id="modelStatus" class="hint" role="status" aria-live="polite"></p>
+          <label data-label-en="Available models" data-label-zh="可用模型"
+            ><select id="modelList" disabled>
+              <option
+                value=""
+                data-en="Fetch models to choose"
+                data-zh="拉取模型后选择"
+              ></option></select
+          ></label>
+          <label
+            data-label-en="Selected model / custom ID"
+            data-label-zh="模型名称（也可手动填写）"
+            ><input id="model" required placeholder="Model ID"
+          /></label>
+          <label
+            data-label-en="Reasoning effort"
+            data-label-zh="推理强度 effort"
+            ><input
+              id="effort"
+              list="effortPresets"
+              maxlength="32"
+              placeholder="Default / 模型默认" /><datalist id="effortPresets">
+              <option value="none"></option>
+              <option value="minimal"></option>
+              <option value="low"></option>
+              <option value="medium"></option>
+              <option value="high"></option>
+              <option value="xhigh"></option></datalist
+          ></label>
+          <p
+            class="hint"
+            style="margin: 0 0 16px"
+            data-en="Leave effort empty for the model default. You can enter a gateway-specific value; supported levels depend on your model."
+            data-zh="effort 留空则采用模型默认值；可填写网关的自定义值，支持范围由模型决定。"
+          ></p>
+          <label class="check"
             ><input id="rememberKey" type="checkbox" /><span
               data-en="Remember key on this device"
               data-zh="在本机记住密钥"
@@ -69,7 +107,12 @@
           ></p>
         </section>
         <section>
-          <h2 data-en="Your writing preferences" data-zh="你的写作偏好"></h2>
+          <h2 data-en="Writing and translation" data-zh="写作与翻译偏好"></h2>
+          <label
+            data-label-en="Translation language"
+            data-label-zh="翻译目标语言"
+            ><input id="translationLanguage" required
+          /></label>
           <div class="grid">
             <label data-label-en="Comment language" data-label-zh="评论语言"
               ><input id="language" required /></label
@@ -113,8 +156,8 @@
         <p id="status" role="status" aria-live="polite"></p>
       </form>
       <footer
-        data-en="When you click Generate on Reddit, the post and relevant comment text are sent directly to your configured provider. No developer server, analytics, or automatic posting."
-        data-zh="在 Reddit 点击生成时，帖子和相关评论文字会直接发送给你配置的模型服务。插件没有开发者中转服务器、分析追踪或自动发布功能。"
+        data-en="Generate and Translate send only the relevant text to your configured provider. Fetch models uses its model-list endpoint. No developer server, analytics, or automatic posting."
+        data-zh="点击生成或翻译时，相关原文直接发送给你配置的模型服务；拉取模型仅请求模型列表接口。插件没有中转服务器、分析追踪或自动发布功能。"
       ></footer>
     </main>
     <script src="options.js"></script>

@@ -1,6 +1,8 @@
 export type Config = {
   baseUrl: string;
   model: string;
+  effort: string;
+  translationLanguage: string;
   protocol: "responses" | "chat";
   instructions: string;
   language: string;
@@ -11,6 +13,8 @@ export type Config = {
 export const defaults: Config = {
   baseUrl: "https://api.openai.com/v1",
   model: "",
+  effort: "",
+  translationLanguage: "Simplified Chinese",
   protocol: "responses",
   instructions: "",
   language: "English",
@@ -57,6 +61,13 @@ export function requestEndpoint(
       "The endpoint URL and API format do not match. Check Responses / Chat Completions in settings.",
     );
   url.pathname += suffix;
+  return url;
+}
+export function modelsEndpoint(base: string): URL {
+  const url = endpoint(base);
+  url.pathname =
+    url.pathname.replace(/\/(responses|chat\/completions|models)$/, "") +
+    "/models";
   return url;
 }
 export function parseDraft(raw: string): Draft {

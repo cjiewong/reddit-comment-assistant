@@ -1,6 +1,6 @@
 import { it, expect, vi, beforeEach, afterEach } from "vitest";
-import { generate } from "../src/api";
-vi.mock("../src/api", () => ({ generate: vi.fn() }));
+import { generate, translate } from "../src/api";
+vi.mock("../src/api", () => ({ generate: vi.fn(), translate: vi.fn() }));
 let connect: (port: any) => void;
 let contains = vi.fn(async () => true);
 const local = {
@@ -10,6 +10,7 @@ const local = {
 beforeEach(async () => {
   vi.resetModules();
   vi.mocked(generate).mockReset();
+  vi.mocked(translate).mockReset();
   contains = vi.fn(async () => true);
   vi.stubGlobal("chrome", {
     runtime: {
@@ -111,4 +112,33 @@ it("aborts a provider request when the editor disconnects", async () => {
   p.handlers.disconnect!();
   await pending;
   expect(signal.aborted).toBe(true);
+});
+
+it("routes translation through the configured model without drafting a comment", async () => {
+  vi.mocked(translate).mockResolvedValue("译文");
+  const p = port();
+  await p.handlers.message!({ type: "translate", text: "Source text" });
+  expect(generate).not.toHaveBeenCalled();
+  expect(translate).toHaveBeenCalledWith(
+    expect.objectContaining({
+      model: "fixture-model",
+      translationLanguage: "Simplified Chinese",
+      effort: "",
+    }),
+    "session-fixture-key",
+    "Source text",
+    expect.any(AbortSignal),
+  );
+  expect(p.value.postMessage).toHaveBeenCalledWith({
+    type: "result",
+    translation: "译文",
+  });
+});
+it("rejects oversized translation requests before sending them to the provider", async () => {
+  const p = port();
+  await p.handlers.message!({ type: "translate", text: "x".repeat(60001) });
+  expect(translate).not.toHaveBeenCalled();
+  expect(p.value.postMessage).toHaveBeenCalledWith(
+    expect.objectContaining({ type: "error" }),
+  );
 });

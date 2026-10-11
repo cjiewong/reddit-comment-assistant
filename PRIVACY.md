@@ -11,3 +11,7 @@ Writing preferences persist locally. Drafts are held in page memory, and text fi
 The extension runs a content script only on `https://www.reddit.com/*`. API host access is optional and requested for the configured origin when you save settings. No browsing-history, cookies, debugger, or clipboard-read permissions are requested. Clicking Copy writes only the generated comment to your clipboard.
 
 Only text relevant to the current generation is sent. Content length is capped. Model output is rendered as text; any HTML used to paste paragraphs is constructed from escaped text nodes. Page content is treated as untrusted model context.
+
+When you click Fetch models in settings, the trusted settings page sends your entered key directly to the corresponding models endpoint. It sends no Reddit text and does not persist the key unless you subsequently save settings. The returned list is held in page memory and is cleared when the Base URL or key changes.
+
+When you click Translate post or Translate comment, only that post’s title/body or that comment’s own text is sent with the selected model, effort and translation-language preference. No automatic translation is performed. Translations are displayed locally as plain text and are not inserted into Reddit’s reply editor. The provider may charge for translation requests as for other model calls.

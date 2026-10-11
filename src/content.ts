@@ -8,6 +8,7 @@ import {
   type Editor,
 } from "./reddit";
 import { normalize, type Draft } from "./shared";
+import { clearTranslations, scanTranslations } from "./translation";
 const zh = navigator.language.toLowerCase().startsWith("zh");
 const t = (en: string, cn: string) => (zh ? cn : en);
 const mounts = new Map<Element, () => void>();
@@ -224,6 +225,7 @@ function mount(host: Element) {
 }
 function scan() {
   if (location.href !== route) {
+    clearTranslations();
     for (const dispose of mounts.values()) dispose();
     mounts.clear();
     route = location.href;
@@ -234,6 +236,7 @@ function scan() {
       mounts.delete(host);
     }
   if (!location.pathname.includes("/comments/")) return;
+  scanTranslations();
   for (const host of deepAll("comment-composer-host"))
     if (!mounts.has(host) && visible(host)) mount(host);
 }

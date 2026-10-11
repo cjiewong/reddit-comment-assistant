@@ -1,4 +1,5 @@
 import { defaults, endpoint, requestEndpoint, type Config } from "./shared";
+import { listModels } from "./api";
 const zh = navigator.language.toLowerCase().startsWith("zh");
 const t = (en: string, cn: string) => (zh ? cn : en);
 document.documentElement.lang = zh ? "zh-CN" : "en";
@@ -12,6 +13,80 @@ for (const el of document.querySelectorAll<HTMLElement>("[data-label-en]"))
   );
 const field = (id: string) => document.getElementById(id) as HTMLInputElement;
 const status = document.getElementById("status")!;
+const modelList = document.getElementById("modelList") as HTMLSelectElement;
+const fetchButton = document.getElementById("fetchModels") as HTMLButtonElement;
+const modelStatus = document.getElementById("modelStatus")!;
+let modelRequest: AbortController | undefined;
+function resetModels() {
+  modelRequest?.abort();
+  modelRequest = undefined;
+  fetchButton.disabled = false;
+  modelList.replaceChildren(
+    new Option(t("Fetch models to choose", "拉取模型后选择"), ""),
+  );
+  modelList.disabled = true;
+  modelStatus.textContent = "";
+}
+for (const name of ["baseUrl", "apiKey"])
+  field(name).addEventListener("input", resetModels);
+modelList.onchange = () => {
+  if (modelList.value) field("model").value = modelList.value;
+};
+field("model").addEventListener("input", () => {
+  modelList.value = field("model").value;
+});
+fetchButton.onclick = async () => {
+  resetModels();
+  const request = new AbortController();
+  modelRequest = request;
+  const base = field("baseUrl").value;
+  const key = field("apiKey").value.trim();
+  fetchButton.disabled = true;
+  modelStatus.textContent = t("Fetching models…", "正在拉取模型…");
+  try {
+    if (!key)
+      throw new Error(t("Enter your API key first.", "请先填写 API Key。"));
+    const url = endpoint(base);
+    const allowed = await chrome.permissions.request({
+      origins: [url.origin + "/*"],
+    });
+    if (request.signal.aborted) return;
+    if (!allowed)
+      throw new Error(t("API access was not granted.", "未授予接口访问权限。"));
+    const models = await listModels(
+      base,
+      key,
+      AbortSignal.any([request.signal, AbortSignal.timeout(15000)]),
+    );
+    if (modelRequest !== request) return;
+    modelList.replaceChildren(
+      new Option(t("Select a model", "请选择模型"), ""),
+      ...models.map((id) => new Option(id, id)),
+    );
+    modelList.disabled = !models.length;
+    modelList.value = field("model").value;
+    modelStatus.textContent = models.length
+      ? t(
+          `Loaded ${models.length} models. Select one and save.`,
+          `已获取 ${models.length} 个模型，选择后保存设置。`,
+        )
+      : t(
+          "No models returned. You can enter a model ID manually.",
+          "服务未返回可用模型，可手动填写模型名称。",
+        );
+  } catch (e) {
+    if (modelRequest === request)
+      modelStatus.textContent =
+        (e as Error).name === "TimeoutError"
+          ? t("Model request timed out.", "拉取模型超时，请重试。")
+          : (e as Error).message;
+  } finally {
+    if (modelRequest === request) {
+      modelRequest = undefined;
+      fetchButton.disabled = false;
+    }
+  }
+};
 async function load() {
   await chrome.storage.local.setAccessLevel({
     accessLevel: "TRUSTED_CONTEXTS",
@@ -70,6 +145,7 @@ document.getElementById("settings")!.onsubmit = async (event) => {
   }
 };
 document.getElementById("clear")!.onclick = async () => {
+  resetModels();
   await Promise.all([
     chrome.storage.local.remove("apiKey"),
     chrome.storage.session.remove("apiKey"),

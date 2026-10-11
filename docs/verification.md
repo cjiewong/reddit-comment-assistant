@@ -1,10 +1,10 @@
-# Verification — v0.1.2
+# Verification — v0.2.0
 
 Date: 2026-10-11.
 
 ## Automated checks
 
-TypeScript checking and 39 tests cover:
+TypeScript checking and 65 tests cover:
 
 - Endpoint validation, bounded prompts, required bilingual output fields and comment length.
 - Responses and Chat Completions, JSON and streaming SSE, arbitrary UTF-8/CRLF chunk boundaries, truncated streams, and HTTP errors.
@@ -45,3 +45,9 @@ The v0.1.1 patch aligns the build and test tooling on esbuild 0.28 so clean inst
 The previous bare-origin URL builder generated `//responses`, which an inspected compatible gateway routed to its HTML frontend (HTTP 200). The canonical `/v1/responses` route returned an API JSON authentication error without credentials. The probe sent no key or Reddit content.
 
 Regression coverage includes bare origins, trailing slashes, custom prefixes, full endpoints, protocol mismatches, HTML responses with misleading content types, malformed SSE data, and a real local HTTP gateway round trip whose frontend fallback serves HTML. Authenticated generation against the user's provider was not attempted.
+
+## v0.2.0 model discovery, effort and translation
+
+Additional tests cover model endpoint derivation, authenticated list requests, sorting/deduplication, invalid or empty lists, errors, stale-fetch cancellation, selection/persistence, default effort omission and protocol-specific effort fields, translation parsing/routing, size limits, explicit-click-only behavior, comment isolation, plain-text rendering and cancellation.
+
+The built settings page fetched models from a real local HTTP fixture in Chrome at 760px and 390px, selected a returned model, saved effort, and showed no horizontal overflow. The production translation module was tested on a real Reddit post and an expanded comment with a deterministic model transport: zero requests at mount, one request per clicked translation button, separate source text and visible translations, and an unchanged empty reply editor. No paid translation or private provider catalog was requested during verification.

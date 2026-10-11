@@ -7,7 +7,9 @@
 ## 功能
 
 - 新版 Reddit 帖子主评论和展开后的评论回复。
-- 可配置 Base URL、API Key、模型名称，支持 Responses 与 Chat Completions 接口。
+- 可配置 Base URL、API Key，点击“拉取模型”获取列表并选择模型，支持 Responses 与 Chat Completions 接口。
+- 自定义推理强度 effort，留空使用模型默认值。
+- 手动翻译帖子和用户评论，译文显示在原文下方，默认简体中文，可配置目标语言。
 - 默认生成英语评论，另附中文解释；支持修改语言、语气、长度及长期写作要求。
 - 每次评论可补充要求，支持取消、复制、明确替换和撤销填入。
 - 自动保护已有草稿和等待生成时输入的内容。
@@ -15,9 +17,9 @@
 
 ## 安装
 
-1. 从 [Releases](https://github.com/cjiewong/reddit-comment-assistant/releases) 下载 `reddit-comment-assistant-0.1.2.zip`，解压到长期保留的文件夹。
+1. 从 [Releases](https://github.com/cjiewong/reddit-comment-assistant/releases) 下载 `reddit-comment-assistant-0.2.0.zip`，解压到长期保留的文件夹。
 2. 打开 `chrome://extensions`，启用“开发者模式”，点击“加载已解压的扩展程序”，选择含有 `manifest.json` 的解压目录。
-3. 点击扩展图标进入设置，填写接口地址、API Key 和完整模型名，选择接口类型，保存并授予该接口域名访问权限。
+3. 点击扩展图标进入设置，填写接口地址和 API Key，点击“拉取模型”并授权接口访问，从列表中选择模型，配置 effort 和接口类型后保存。
 4. 打开或刷新 `www.reddit.com` 上的帖子。在主评论框旁点击“生成并填入”；回复他人时先点击 Reddit 的 Reply。
 5. 检查英语评论与中文解释，按需修改，最后自己点击 Reddit 的 Comment 发布。
 
@@ -27,11 +29,16 @@
 
 - **Base URL**：填写 API 根地址，例如 `https://api.openai.com/v1`，只填域名会自动补齐 `/v1`，也可填写与所选接口类型一致的完整 `/responses` 或 `/chat/completions` 地址。
 - **接口类型**：OpenAI 官方优先用 Responses；兼容网关按提供商说明选择。切换网关时也要检查接口类型。
-- **模型名称**：填写该服务实际支持的模型 ID，不预设或锁定模型。
+- **模型名称**：通过“拉取模型”请求对应 `/models` 接口后选择，也保留手动填写入口。拉取无需先保存设置，不调用生成接口；修改域名或密钥会取消旧请求并清空列表，拉取失败不会覆盖已选模型。
+- **effort**：可选 `none`、`minimal`、`low`、`medium`、`high`、`xhigh`，也可输入网关自定义值。留空不发送该参数，实际支持范围取决于模型。评论生成和翻译共用此设置。
 - **API Key**：使用自己的 API 凭据。ChatGPT 订阅不等于 API 额度，调用费用由所配置的提供商计算；保存设置不会调用模型。
 - **记住密钥**：未勾选时，浏览器重启、扩展更新或重新加载会清除密钥；勾选后保存在本机，不加密，不跨设备同步。
 
 远程服务要求 HTTPS；本地开发可使用 `http://localhost` 或 `http://127.0.0.1`。兼容服务需要支持所选协议，并按提示返回包含 `comment` 和 `explanationZh` 的 JSON。支持流式 SSE 和普通 JSON 响应。
+
+## 翻译帖子与评论
+
+在帖子下方点击“翻译帖子”，或在评论正文下方点击“翻译评论”。点击后才调用当前模型，译文显示在原文下面，支持取消、收起、展开和重新翻译，不会填入评论框。目标语言在设置中修改，默认简体中文。超过 60,000 字符的原文会明确报错，不会悄悄截断。
 
 ## 草稿保护
 

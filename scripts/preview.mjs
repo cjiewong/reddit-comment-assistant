@@ -6,6 +6,15 @@ const allowed = new Set(["/options.html", "/options.css", "/options.js"]);
 const server = createServer(async (req, res) => {
   try {
     const path = new URL(req.url, "http://localhost").pathname;
+    if (path === "/v1/models") {
+      res.setHeader("Content-Type", "application/json");
+      res.end(
+        JSON.stringify({
+          data: [{ id: "fixture-model-a" }, { id: "fixture-model-b" }],
+        }),
+      );
+      return;
+    }
     if (path === "/mock.js") {
       res.setHeader("Content-Type", "application/javascript");
       res.end(mock);

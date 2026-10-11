@@ -1,5 +1,5 @@
 import { defaults, endpoint, type Config } from "./shared";
-import { generate } from "./api";
+import { generate, translate } from "./api";
 const ready = Promise.all([
   chrome.storage.local.setAccessLevel({ accessLevel: "TRUSTED_CONTEXTS" }),
   chrome.storage.session.setAccessLevel({ accessLevel: "TRUSTED_CONTEXTS" }),
@@ -41,7 +41,7 @@ chrome.runtime.onConnect.addListener((port) => {
       send({ type: "pong" });
       return;
     }
-    if (msg?.type !== "generate" || busy) return;
+    if (!["generate", "translate"].includes(msg?.type) || busy) return;
     busy = true;
     controller = new AbortController();
     timeout = setTimeout(() => controller?.abort(), 120000);
@@ -53,6 +53,22 @@ chrome.runtime.onConnect.addListener((port) => {
       const origin = endpoint(config.baseUrl).origin + "/*";
       if (!(await chrome.permissions.contains({ origins: [origin] })))
         throw new Error("Grant API access in extension settings.");
+      if (msg.type === "translate") {
+        if (
+          typeof msg.text !== "string" ||
+          !msg.text.trim() ||
+          msg.text.length > 60000
+        )
+          throw new Error("Invalid translation source.");
+        const translation = await translate(
+          config,
+          config.rememberKey ? local.apiKey : session.apiKey,
+          msg.text,
+          controller.signal,
+        );
+        send({ type: "result", translation });
+        return;
+      }
       if (
         !msg.context ||
         typeof msg.context.title !== "string" ||
