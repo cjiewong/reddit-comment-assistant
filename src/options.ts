@@ -13,6 +13,15 @@ for (const el of document.querySelectorAll<HTMLElement>("[data-label-en]"))
   );
 const field = (id: string) => document.getElementById(id) as HTMLInputElement;
 const status = document.getElementById("status")!;
+const effort = document.getElementById("effort") as HTMLSelectElement;
+const customEffort = field("customEffort");
+function syncEffort() {
+  const custom = effort.value === "__custom";
+  document.getElementById("customEffortLabel")!.hidden = !custom;
+  customEffort.disabled = !custom;
+  customEffort.required = custom;
+}
+effort.onchange = syncEffort;
 const modelList = document.getElementById("modelList") as HTMLSelectElement;
 const fetchButton = document.getElementById("fetchModels") as HTMLButtonElement;
 const modelStatus = document.getElementById("modelStatus")!;
@@ -96,7 +105,15 @@ async function load() {
   const config = { ...defaults, ...local.config };
   for (const key of Object.keys(defaults) as (keyof Config)[])
     if (key === "rememberKey") field(key).checked = config[key];
-    else field(key).value = config[key];
+    else if (key === "effort") {
+      const preset = Array.from(effort.options).some(
+        (option) =>
+          option.value !== "__custom" && option.value === config.effort,
+      );
+      effort.value = preset ? config.effort : "__custom";
+      customEffort.value = preset ? "" : config.effort;
+      syncEffort();
+    } else field(key).value = config[key];
   field("apiKey").value =
     (config.rememberKey ? local.apiKey : session.apiKey) || "";
 }
@@ -111,6 +128,16 @@ document.getElementById("settings")!.onsubmit = async (event) => {
     for (const key of Object.keys(defaults) as (keyof Config)[])
       if (key === "rememberKey") config[key] = field(key).checked;
       else (config as any)[key] = field(key).value.trim();
+    if (effort.value === "__custom") {
+      config.effort = customEffort.value.trim();
+      if (!config.effort)
+        throw new Error(
+          t(
+            "Enter a custom effort value or choose Model default.",
+            "请填写自定义 effort，或选择模型默认。",
+          ),
+        );
+    }
     config.baseUrl = url.toString().replace(/\/$/, "");
     requestEndpoint(config.baseUrl, config.protocol);
     const granted = await chrome.permissions.request({

@@ -76,23 +76,40 @@
           <label
             data-label-en="Reasoning effort"
             data-label-zh="推理强度 effort"
-            ><input
-              id="effort"
-              list="effortPresets"
-              maxlength="32"
-              placeholder="Default / 模型默认" /><datalist id="effortPresets">
-              <option value="none"></option>
-              <option value="minimal"></option>
-              <option value="low"></option>
-              <option value="medium"></option>
-              <option value="high"></option>
-              <option value="xhigh"></option></datalist
+            ><select id="effort">
+              <option
+                value=""
+                data-en="Model default"
+                data-zh="模型默认"
+              ></option>
+              <option value="none">none</option>
+              <option value="minimal">minimal</option>
+              <option value="low">low</option>
+              <option value="medium">medium</option>
+              <option value="high">high</option>
+              <option value="xhigh">xhigh</option>
+              <option
+                value="__custom"
+                data-en="Custom…"
+                data-zh="自定义…"
+              ></option></select
           ></label>
+          <label
+            id="customEffortLabel"
+            hidden
+            data-label-en="Custom effort value"
+            data-label-zh="自定义 effort 值"
+            ><input
+              id="customEffort"
+              maxlength="32"
+              disabled
+              placeholder="e.g. max / ultra"
+          /></label>
           <p
             class="hint"
             style="margin: 0 0 16px"
-            data-en="Leave effort empty for the model default. You can enter a gateway-specific value; supported levels depend on your model."
-            data-zh="effort 留空则采用模型默认值；可填写网关的自定义值，支持范围由模型决定。"
+            data-en="Model default omits effort. Choose Custom to enter a gateway-specific value; supported levels depend on your model."
+            data-zh="“模型默认”不发送 effort；选择“自定义”可填写网关的其他值，支持范围由模型决定。"
           ></p>
           <label class="check"
             ><input id="rememberKey" type="checkbox" /><span

@@ -20,7 +20,7 @@ Draft a thoughtful Reddit reply with your own AI model, fill it into the comment
 
 ## Install
 
-1. Download `reddit-comment-assistant-0.2.0.zip` from [Releases](https://github.com/cjiewong/reddit-comment-assistant/releases) and extract it into a permanent folder.
+1. Download `reddit-comment-assistant-0.2.1.zip` from [Releases](https://github.com/cjiewong/reddit-comment-assistant/releases) and extract it into a permanent folder.
 2. Open `chrome://extensions`, enable **Developer mode**, select **Load unpacked**, and choose the extracted folder containing `manifest.json`.
 3. Click the extension icon to open settings. Enter your provider’s Base URL and API key, click **Fetch models**, select a model, and choose the matching API format. Set effort if desired, then save. Grant access to the provider when prompted.
 4. Open or refresh a post on `https://www.reddit.com`. Click **Generate & fill** below the main composer, or click Reddit’s **Reply** first to reveal a reply composer.
@@ -47,9 +47,9 @@ The provider must support the chosen API format and return the requested JSON ob
 
 **Fetch models** calls `GET /models` under your configured API root (for a bare domain, `/v1/models`). Full generation endpoint URLs are converted to the corresponding models endpoint. Fetching uses the API key currently entered in settings, does not require saving first, and does not send Reddit content or generate text. Editing the Base URL/key cancels an in-flight fetch and clears the displayed list. A failed refresh preserves the selected model ID.
 
-**Reasoning effort** is optional: leave it empty to omit the parameter and use the provider’s default. Common suggestions are `none`, `minimal`, `low`, `medium`, `high`, and `xhigh`; you can type a custom gateway value. Supported values depend on the selected model. Responses requests send `reasoning.effort`; Chat Completions send `reasoning_effort` ([official API guidance](https://developers.openai.com/api/docs/guides/reasoning)). The same effort applies to drafting and translation.
+**Reasoning effort** uses a dropdown with Model default, `none`, `minimal`, `low`, `medium`, `high`, and `xhigh`. Model default omits the parameter. Choose Custom to reveal a separate input for gateway-specific values; previously saved custom values are restored automatically. Supported values depend on the selected model. Responses requests send `reasoning.effort`; Chat Completions send `reasoning_effort` ([official API guidance](https://developers.openai.com/api/docs/guides/reasoning)). The same effort applies to drafting and translation.
 
-Click **Translate post** beneath a post or **Translate comment** beneath a loaded comment. Translation starts only when clicked and appears below the original text. You can cancel, hide/show, or translate again. Select the target language in settings; the default is Simplified Chinese. Translations use the selected model and do not populate the reply editor. Sources over 60,000 characters are rejected rather than silently truncated.
+Click **Translate post** beneath a post or **Translate comment** beneath a loaded comment. Translation starts only when clicked and appears below the original text. HTML layout whitespace is removed from the source; translations use compact paragraphs and lists, while fenced code indentation is preserved. You can cancel, hide/show, or translate again. Select the target language in settings; the default is Simplified Chinese. Translations use the selected model and do not populate the reply editor. Sources over 60,000 characters are rejected rather than silently truncated.
 
 ## Draft behavior
 

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Reddit Comment Assistant",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Draft Reddit comments with your own OpenAI-compatible model. Review English replies with Chinese explanations before posting.",
   "minimum_chrome_version": "120",
   "permissions": ["storage"],

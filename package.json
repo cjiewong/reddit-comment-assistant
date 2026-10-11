@@ -1,6 +1,6 @@
 {
   "name": "reddit-comment-assistant",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "description": "Bring your own AI model to draft Reddit replies with Chinese explanations.",

@@ -1,4 +1,5 @@
 import { visible } from "./reddit";
+import { extractTranslationText, renderTranslation } from "./translation-text";
 const zh = navigator.language.toLowerCase().startsWith("zh");
 const t = (en: string, cn: string) => (zh ? cn : en);
 const entries = new Map<Element, { shell: HTMLElement; dispose: () => void }>();
@@ -16,7 +17,7 @@ function mount(
   if (!isPost && anchor.hasAttribute("slot"))
     shell.slot = anchor.getAttribute("slot")!;
   const root = shell.attachShadow({ mode: "open" });
-  root.innerHTML = `<style>:host{display:block;margin:8px 0;font:13px/1.6 system-ui;color:inherit}button{font:inherit;cursor:pointer;border:1px solid #aebbc4;border-radius:16px;padding:4px 12px;color:inherit;background:transparent}button:disabled{opacity:.5;cursor:default}button:focus-visible{outline:2px solid #1683c7;outline-offset:2px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.status{font-size:12px}.text{white-space:pre-wrap;overflow-wrap:anywhere;border-left:3px solid #d93900;padding:8px 12px;margin:8px 0}[hidden]{display:none!important}</style><div class="row"><button type="button" id="translate">${isPost ? t("Translate post", "翻译帖子") : t("Translate comment", "翻译评论")}</button><button type="button" id="cancel" hidden>${t("Cancel", "取消")}</button><button type="button" id="toggle" hidden>${t("Hide translation", "收起译文")}</button><span class="status" role="status" aria-live="polite"></span></div><div class="text" hidden></div>`;
+  root.innerHTML = `<style>:host{display:block;margin:8px 0;font:13px/1.6 system-ui;color:inherit}button{font:inherit;cursor:pointer;border:1px solid #aebbc4;border-radius:16px;padding:4px 12px;color:inherit;background:transparent}button:disabled{opacity:.5;cursor:default}button:focus-visible{outline:2px solid #1683c7;outline-offset:2px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.status{font-size:12px}.text{overflow-wrap:anywhere;border-left:3px solid #d93900;padding:8px 12px;margin:8px 0;font-size:14px;line-height:1.65}.text p{white-space:pre-line;margin:0 0 .65em}.text ul,.text ol{margin:.35em 0 .65em;padding-left:1.5em}.text li{margin:.2em 0;white-space:pre-line}.text pre{white-space:pre-wrap;font:12px/1.5 ui-monospace,monospace;margin:.5em 0;padding:8px;background:rgba(128,128,128,.08);border-radius:6px}.text>:last-child{margin-bottom:0}[hidden]{display:none!important}</style><div class="row"><button type="button" id="translate">${isPost ? t("Translate post", "翻译帖子") : t("Translate comment", "翻译评论")}</button><button type="button" id="cancel" hidden>${t("Cancel", "取消")}</button><button type="button" id="toggle" hidden>${t("Hide translation", "收起译文")}</button><span class="status" role="status" aria-live="polite"></span></div><div class="text" hidden></div>`;
   const button = root.querySelector<HTMLButtonElement>("#translate")!;
   const cancel = root.querySelector<HTMLButtonElement>("#cancel")!;
   const toggle = root.querySelector<HTMLButtonElement>("#toggle")!;
@@ -98,7 +99,7 @@ function mount(
           );
           return;
         }
-        output.textContent = message.translation;
+        renderTranslation(output, message.translation);
         output.hidden = false;
         toggle.hidden = false;
         toggle.textContent = t("Hide translation", "收起译文");
@@ -134,7 +135,7 @@ export function scanTranslations() {
       () =>
         [
           post.getAttribute("post-title") || "",
-          post.querySelector('[slot="text-body"]')?.textContent || "",
+          extractTranslationText(post.querySelector('[slot="text-body"]')),
         ]
           .filter(Boolean)
           .join("\n\n"),
@@ -148,6 +149,6 @@ export function scanTranslations() {
       !entries.has(comment) &&
       visible(body)
     )
-      mount(comment, body, () => body.textContent || "", false);
+      mount(comment, body, () => extractTranslationText(body), false);
   }
 }

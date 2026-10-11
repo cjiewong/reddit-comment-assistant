@@ -1,10 +1,10 @@
-# Verification — v0.2.0
+# Verification — v0.2.1
 
 Date: 2026-10-11.
 
 ## Automated checks
 
-TypeScript checking and 65 tests cover:
+TypeScript checking and 73 tests cover:
 
 - Endpoint validation, bounded prompts, required bilingual output fields and comment length.
 - Responses and Chat Completions, JSON and streaming SSE, arbitrary UTF-8/CRLF chunk boundaries, truncated streams, and HTTP errors.
@@ -51,3 +51,9 @@ Regression coverage includes bare origins, trailing slashes, custom prefixes, fu
 Additional tests cover model endpoint derivation, authenticated list requests, sorting/deduplication, invalid or empty lists, errors, stale-fetch cancellation, selection/persistence, default effort omission and protocol-specific effort fields, translation parsing/routing, size limits, explicit-click-only behavior, comment isolation, plain-text rendering and cancellation.
 
 The built settings page fetched models from a real local HTTP fixture in Chrome at 760px and 390px, selected a returned model, saved effort, and showed no horizontal overflow. The production translation module was tested on a real Reddit post and an expanded comment with a deterministic model transport: zero requests at mount, one request per clicked translation button, separate source text and visible translations, and an unchanged empty reply editor. No paid translation or private provider catalog was requested during verification.
+
+## v0.2.1 effort selector and translation layout
+
+Regression tests cover the native effort select, all presets remaining available when medium is selected, custom/default persistence, migration of saved custom values, source HTML whitespace removal, paragraph/list boundaries, ordered and nested lists, code whitespace, and inert rendering of model markup.
+
+Chrome UI verification at 760px and 390px confirmed all eight effort options, correct custom-field visibility and no horizontal overflow. A whitespace-heavy translated fixture rendered into four compact paragraphs and four list items with no empty paragraphs; the production renderer measured approximately 246px high. This layout check used deterministic fixture output, not a paid model request.

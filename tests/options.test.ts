@@ -99,3 +99,62 @@ it("preserves the selected model on a failed refresh", async () => {
   );
   expect(input("model").value).toBe("saved-model");
 });
+
+it("shows all effort presets even when medium is selected", () => {
+  const select = document.getElementById("effort") as HTMLSelectElement;
+  expect(select.tagName).toBe("SELECT");
+  select.value = "medium";
+  select.dispatchEvent(new Event("change"));
+  expect(Array.from(select.options).map((option) => option.value)).toEqual([
+    "",
+    "none",
+    "minimal",
+    "low",
+    "medium",
+    "high",
+    "xhigh",
+    "__custom",
+  ]);
+  expect(document.getElementById("customEffortLabel")!.hidden).toBe(true);
+});
+it("saves custom effort without the UI sentinel and clears it for model default", async () => {
+  const select = document.getElementById("effort") as HTMLSelectElement;
+  select.value = "__custom";
+  select.dispatchEvent(new Event("change"));
+  input("customEffort").value = "ultra";
+  expect(input("customEffort").disabled).toBe(false);
+  document
+    .querySelector("form")!
+    .dispatchEvent(new Event("submit", { cancelable: true }));
+  await vi.waitFor(() =>
+    expect(localSet).toHaveBeenCalledWith({
+      config: expect.objectContaining({ effort: "ultra" }),
+    }),
+  );
+  localSet.mockClear();
+  select.value = "";
+  select.dispatchEvent(new Event("change"));
+  document
+    .querySelector("form")!
+    .dispatchEvent(new Event("submit", { cancelable: true }));
+  await vi.waitFor(() =>
+    expect(localSet).toHaveBeenCalledWith({
+      config: expect.objectContaining({ effort: "" }),
+    }),
+  );
+  expect(input("customEffort").disabled).toBe(true);
+});
+it("restores an existing custom effort on settings load", async () => {
+  vi.resetModules();
+  document.documentElement.innerHTML = readFileSync(
+    "public/options.html",
+    "utf8",
+  );
+  chrome.storage.local.get = vi.fn(async () => ({
+    config: { model: "saved-model", effort: "ultra" },
+  })) as typeof chrome.storage.local.get;
+  await import("../src/options");
+  await vi.waitFor(() => expect(input("effort").value).toBe("__custom"));
+  expect(input("customEffort").value).toBe("ultra");
+  expect(input("customEffort").disabled).toBe(false);
+});
