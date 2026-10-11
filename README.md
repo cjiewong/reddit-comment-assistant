@@ -17,7 +17,7 @@ Draft a thoughtful Reddit reply with your own AI model, fill it into the comment
 
 ## Install
 
-1. Download `reddit-comment-assistant-0.1.1.zip` from [Releases](https://github.com/cjiewong/reddit-comment-assistant/releases) and extract it into a permanent folder.
+1. Download `reddit-comment-assistant-0.1.2.zip` from [Releases](https://github.com/cjiewong/reddit-comment-assistant/releases) and extract it into a permanent folder.
 2. Open `chrome://extensions`, enable **Developer mode**, select **Load unpacked**, and choose the extracted folder containing `manifest.json`.
 3. Click the extension icon to open settings. Enter your provider’s Base URL, API key and exact model ID. Select the matching API format, then save and grant access to that provider.
 4. Open or refresh a post on `https://www.reddit.com`. Click **Generate & fill** below the main composer, or click Reddit’s **Reply** first to reveal a reply composer.
@@ -27,14 +27,14 @@ A paid ChatGPT subscription is not a replacement for an API credential. Your pro
 
 ## Configuration
 
-| Field               | Meaning                                                                                                        |
-| ------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Base URL            | API root, e.g. `https://api.openai.com/v1`. Do not append `/responses` or `/chat/completions`.                 |
-| API format          | Responses for the official OpenAI API; select Chat Completions if required by your compatible provider.        |
-| Model name          | Exact model identifier supported by your provider. No model is hardcoded.                                      |
-| API key             | Sent only to the configured provider. Defaults to browser-session storage.                                     |
-| Remember key        | Persist locally across browser restarts; local storage is not encrypted and is never synced by this extension. |
-| Writing preferences | Comment language, length, tone, and standing instructions. Chinese explanations remain separate.               |
+| Field               | Meaning                                                                                                                                                             |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Base URL            | API root, e.g. `https://api.openai.com/v1`. Bare domains automatically use `/v1`; complete endpoint URLs are also accepted when they match the selected API format. |
+| API format          | Responses for the official OpenAI API; select Chat Completions if required by your compatible provider.                                                             |
+| Model name          | Exact model identifier supported by your provider. No model is hardcoded.                                                                                           |
+| API key             | Sent only to the configured provider. Defaults to browser-session storage.                                                                                          |
+| Remember key        | Persist locally across browser restarts; local storage is not encrypted and is never synced by this extension.                                                      |
+| Writing preferences | Comment language, length, tone, and standing instructions. Chinese explanations remain separate.                                                                    |
 
 Remote API endpoints require HTTPS. HTTP is supported only for `localhost` and `127.0.0.1` development endpoints. Provider redirects are rejected to avoid forwarding credentials unexpectedly. Requests time out after two minutes; a service-worker termination or provider timeout is surfaced rather than silently retried.
 

@@ -40,6 +40,23 @@ export function endpoint(base: string): URL {
   )
     throw new Error("Use HTTPS, or HTTP on localhost.");
   url.pathname = url.pathname.replace(/\/+$/, "");
+  // A provider website origin is commonly pasted here. OpenAI-compatible
+  // APIs conventionally live under /v1, not the site's frontend router.
+  if (url.pathname === "/" || !url.pathname) url.pathname = "/v1";
+  return url;
+}
+export function requestEndpoint(
+  base: string,
+  protocol: Config["protocol"],
+): URL {
+  const url = endpoint(base);
+  const suffix = protocol === "responses" ? "/responses" : "/chat/completions";
+  if (url.pathname.endsWith(suffix)) return url;
+  if (/\/(responses|chat\/completions)$/.test(url.pathname))
+    throw new Error(
+      "The endpoint URL and API format do not match. Check Responses / Chat Completions in settings.",
+    );
+  url.pathname += suffix;
   return url;
 }
 export function parseDraft(raw: string): Draft {

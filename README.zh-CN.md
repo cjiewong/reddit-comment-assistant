@@ -15,7 +15,7 @@
 
 ## 安装
 
-1. 从 [Releases](https://github.com/cjiewong/reddit-comment-assistant/releases) 下载 `reddit-comment-assistant-0.1.1.zip`，解压到长期保留的文件夹。
+1. 从 [Releases](https://github.com/cjiewong/reddit-comment-assistant/releases) 下载 `reddit-comment-assistant-0.1.2.zip`，解压到长期保留的文件夹。
 2. 打开 `chrome://extensions`，启用“开发者模式”，点击“加载已解压的扩展程序”，选择含有 `manifest.json` 的解压目录。
 3. 点击扩展图标进入设置，填写接口地址、API Key 和完整模型名，选择接口类型，保存并授予该接口域名访问权限。
 4. 打开或刷新 `www.reddit.com` 上的帖子。在主评论框旁点击“生成并填入”；回复他人时先点击 Reddit 的 Reply。
@@ -25,7 +25,7 @@
 
 ## 模型配置
 
-- **Base URL**：填写 API 根地址，例如 `https://api.openai.com/v1`，不要包含 `/responses` 或 `/chat/completions`。
+- **Base URL**：填写 API 根地址，例如 `https://api.openai.com/v1`，只填域名会自动补齐 `/v1`，也可填写与所选接口类型一致的完整 `/responses` 或 `/chat/completions` 地址。
 - **接口类型**：OpenAI 官方优先用 Responses；兼容网关按提供商说明选择。切换网关时也要检查接口类型。
 - **模型名称**：填写该服务实际支持的模型 ID，不预设或锁定模型。
 - **API Key**：使用自己的 API 凭据。ChatGPT 订阅不等于 API 额度，调用费用由所配置的提供商计算；保存设置不会调用模型。

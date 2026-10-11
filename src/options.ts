@@ -1,4 +1,4 @@
-import { defaults, endpoint, type Config } from "./shared";
+import { defaults, endpoint, requestEndpoint, type Config } from "./shared";
 const zh = navigator.language.toLowerCase().startsWith("zh");
 const t = (en: string, cn: string) => (zh ? cn : en);
 document.documentElement.lang = zh ? "zh-CN" : "en";
@@ -37,6 +37,7 @@ document.getElementById("settings")!.onsubmit = async (event) => {
       if (key === "rememberKey") config[key] = field(key).checked;
       else (config as any)[key] = field(key).value.trim();
     config.baseUrl = url.toString().replace(/\/$/, "");
+    requestEndpoint(config.baseUrl, config.protocol);
     const granted = await chrome.permissions.request({
       origins: [url.origin + "/*"],
     });
@@ -59,6 +60,7 @@ document.getElementById("settings")!.onsubmit = async (event) => {
       await chrome.storage.session.set({ apiKey: key });
       await chrome.storage.local.remove("apiKey");
     }
+    field("baseUrl").value = config.baseUrl;
     status.textContent = t(
       "Saved. Open a Reddit post and select Generate & fill.",
       "已保存。打开 Reddit 帖子，点击“生成并填入”。",

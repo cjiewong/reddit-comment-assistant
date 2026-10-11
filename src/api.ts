@@ -1,10 +1,42 @@
 import {
-  endpoint,
+  requestEndpoint,
   parseDraft,
   prompt,
   type Config,
   type Context,
 } from "./shared";
+function providerJson(
+  text: string,
+  url: URL,
+  contentType: string,
+  status: number,
+) {
+  const zh =
+    typeof navigator !== "undefined" &&
+    navigator.language.toLowerCase().startsWith("zh");
+  const address = url.origin + url.pathname;
+  if (
+    contentType.toLowerCase().includes("text/html") ||
+    /^\s*<(?:!doctype\s+html|html\b)/i.test(text)
+  )
+    throw new Error(
+      zh
+        ? `接口返回了 HTML 网页，而非 API 数据（HTTP ${status}）。请求地址：${address}。请检查 API 路径（通常含 /v1）及网关登录／访问限制。`
+        : `The API returned an HTML page instead of JSON (HTTP ${status}). Request: ${address}. Check the API path (usually /v1) and gateway login/access restrictions.`,
+    );
+  try {
+    const value = JSON.parse(text);
+    if (!value || typeof value !== "object" || Array.isArray(value))
+      throw new Error();
+    return value;
+  } catch {
+    throw new Error(
+      zh
+        ? `模型接口返回了无效的 JSON 数据（HTTP ${status}）。请求地址：${address}。请检查接口类型和网关配置。`
+        : `The provider returned invalid JSON (HTTP ${status}). Request: ${address}. Check the API format and gateway configuration.`,
+    );
+  }
+}
 export async function generate(
   config: Config,
   key: string,
@@ -14,9 +46,7 @@ export async function generate(
 ) {
   if (!key || !config.model.trim())
     throw new Error("Set your API key and model in extension settings first.");
-  const url = endpoint(config.baseUrl);
-  url.pathname +=
-    "/" + (config.protocol === "responses" ? "responses" : "chat/completions");
+  const url = requestEndpoint(config.baseUrl, config.protocol);
   const p = prompt(config, context, note);
   const body =
     config.protocol === "responses"
@@ -39,6 +69,7 @@ export async function generate(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Accept: "text/event-stream, application/json",
       Authorization: `Bearer ${key}`,
     },
     body: JSON.stringify(body),
@@ -75,7 +106,12 @@ export async function generate(
         finished = true;
         return;
       }
-      const item = JSON.parse(data);
+      const item = providerJson(
+        data,
+        url,
+        "text/event-stream",
+        response.status,
+      );
       if (
         item.error ||
         item.type === "error" ||
@@ -127,7 +163,12 @@ export async function generate(
   } else {
     const text = await response.text();
     if (text.length > 200000) throw new Error("Response too large.");
-    const data = JSON.parse(text);
+    const data = providerJson(
+      text,
+      url,
+      response.headers.get("content-type") || "",
+      response.status,
+    );
     if (config.protocol === "responses") {
       if (data.status && data.status !== "completed")
         throw new Error("Incomplete response.");

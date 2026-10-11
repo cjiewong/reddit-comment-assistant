@@ -1,10 +1,10 @@
-# Verification — v0.1.1
+# Verification — v0.1.2
 
 Date: 2026-10-11.
 
 ## Automated checks
 
-TypeScript checking and 31 tests cover:
+TypeScript checking and 39 tests cover:
 
 - Endpoint validation, bounded prompts, required bilingual output fields and comment length.
 - Responses and Chat Completions, JSON and streaming SSE, arbitrary UTF-8/CRLF chunk boundaries, truncated streams, and HTTP errors.
@@ -39,3 +39,9 @@ The built settings page was inspected at 760px and 390px widths in Chrome using 
 A fully installed extension with a real provider API key has not been exercised in this environment. The current browser automation channel cannot load an unpacked extension through `chrome://extensions`, and no provider credential was supplied for this extension. After installation, configure your provider and generate one draft to verify your provider/model combination. These limitations are not represented as completed tests.
 
 The v0.1.1 patch aligns the build and test tooling on esbuild 0.28 so clean installations also resolve under the npm version bundled with Node.js 22 in GitHub Actions.
+
+## v0.1.2 gateway URL regression
+
+The previous bare-origin URL builder generated `//responses`, which an inspected compatible gateway routed to its HTML frontend (HTTP 200). The canonical `/v1/responses` route returned an API JSON authentication error without credentials. The probe sent no key or Reddit content.
+
+Regression coverage includes bare origins, trailing slashes, custom prefixes, full endpoints, protocol mismatches, HTML responses with misleading content types, malformed SSE data, and a real local HTTP gateway round trip whose frontend fallback serves HTML. Authenticated generation against the user's provider was not attempted.

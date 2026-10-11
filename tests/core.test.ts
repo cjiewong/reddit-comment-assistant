@@ -166,3 +166,90 @@ describe.each(["responses", "chat"] as const)("%s transport", (protocol) => {
     },
   );
 });
+
+describe("gateway address and response regressions", () => {
+  it.each(["responses", "chat"] as const)(
+    "normalizes a bare origin without double slashes for %s",
+    async (protocol) => {
+      const { requestEndpoint } = await import("../src/shared");
+      const suffix =
+        protocol === "responses" ? "responses" : "chat/completions";
+      for (const base of [
+        "https://gateway.example",
+        "https://gateway.example/",
+        "https://gateway.example/v1/",
+      ]) {
+        expect(requestEndpoint(base, protocol).href).toBe(
+          `https://gateway.example/v1/${suffix}`,
+        );
+      }
+      expect(
+        requestEndpoint(`https://gateway.example/custom/v1/${suffix}`, protocol)
+          .href,
+      ).toBe(`https://gateway.example/custom/v1/${suffix}`);
+      expect(
+        requestEndpoint("https://gateway.example/custom/api", protocol).href,
+      ).toBe(`https://gateway.example/custom/api/${suffix}`);
+    },
+  );
+  it("rejects a full endpoint paired with the wrong protocol", async () => {
+    const { requestEndpoint } = await import("../src/shared");
+    expect(() =>
+      requestEndpoint(
+        "https://gateway.example/v1/chat/completions",
+        "responses",
+      ),
+    ).toThrow("do not match");
+  });
+  it.each(["text/html", "application/json", "text/plain"])(
+    "explains an HTML response labelled %s without exposing its body",
+    async (contentType) => {
+      vi.stubGlobal(
+        "fetch",
+        async () =>
+          new Response("<!doctype html><html>private-upstream-token</html>", {
+            headers: { "content-type": contentType },
+          }),
+      );
+      await expect(
+        generate(
+          { ...defaults, baseUrl: "https://gateway.example", model: "fixture" },
+          "key",
+          context,
+          "",
+          new AbortController().signal,
+        ),
+      ).rejects.toThrow("HTML");
+      try {
+        await generate(
+          { ...defaults, baseUrl: "https://gateway.example", model: "fixture" },
+          "key",
+          context,
+          "",
+          new AbortController().signal,
+        );
+      } catch (e) {
+        expect((e as Error).message).not.toContain("private-upstream-token");
+        expect((e as Error).message).toContain("/v1/responses");
+      }
+    },
+  );
+  it("explains malformed SSE JSON rather than exposing a JSON.parse exception", async () => {
+    vi.stubGlobal(
+      "fetch",
+      async () =>
+        new Response("data: invalid-provider-data\n\n", {
+          headers: { "content-type": "text/event-stream" },
+        }),
+    );
+    await expect(
+      generate(
+        { ...defaults, model: "fixture" },
+        "key",
+        context,
+        "",
+        new AbortController().signal,
+      ),
+    ).rejects.toThrow("invalid JSON");
+  });
+});
