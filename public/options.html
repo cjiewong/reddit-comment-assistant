@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Reddit Comment Assistant · Settings</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <span class="eyebrow">REDDIT COMMENT ASSISTANT</span>
+        <h1
+          data-en="A little help finding your words."
+          data-zh="让想法，更容易表达。"
+        >
+          A little help finding your words.
+        </h1>
+        <p
+          data-en="Your model. Your voice. You decide when to post."
+          data-zh="用你的模型，表达你的观点，由你决定发布。"
+        ></p>
+      </header>
+      <form id="settings">
+        <section>
+          <h2 data-en="Model connection" data-zh="模型连接"></h2>
+          <div class="grid">
+            <label
+              >Base URL<input
+                id="baseUrl"
+                type="url"
+                required
+                placeholder="https://api.openai.com/v1" /></label
+            ><label data-label-en="API format" data-label-zh="接口类型"
+              ><select id="protocol">
+                <option value="responses">Responses API</option>
+                <option value="chat">Chat Completions</option>
+              </select></label
+            >
+          </div>
+          <label data-label-en="Model name" data-label-zh="模型名称"
+            ><input
+              id="model"
+              required
+              placeholder="Enter the exact model ID from your provider" /></label
+          ><label
+            >API Key<input
+              id="apiKey"
+              type="password"
+              autocomplete="off"
+              required
+              placeholder="Your own API key" /></label
+          ><label class="check"
+            ><input id="rememberKey" type="checkbox" /><span
+              data-en="Remember key on this device"
+              data-zh="在本机记住密钥"
+            ></span
+          ></label>
+          <p
+            class="hint"
+            data-en="By default, the key lasts for this browser session only. Remembered keys are stored locally, not encrypted or synced. Reddit pages cannot access the key through this extension."
+            data-zh="默认仅在本次浏览器会话中保存。记住的密钥存于本机，不加密、不跨设备同步；插件不会将密钥暴露给 Reddit 页面。"
+          ></p>
+        </section>
+        <section>
+          <h2 data-en="Your writing preferences" data-zh="你的写作偏好"></h2>
+          <div class="grid">
+            <label data-label-en="Comment language" data-label-zh="评论语言"
+              ><input id="language" required /></label
+            ><label data-label-en="Length" data-label-zh="长度"
+              ><input id="length" required
+            /></label>
+          </div>
+          <label data-label-en="Tone" data-label-zh="语气"
+            ><input id="tone" required /></label
+          ><label
+            data-label-en="Standing instructions"
+            data-label-zh="长期写作要求"
+          >
+            <textarea
+              id="instructions"
+              rows="4"
+              maxlength="4000"
+              placeholder="e.g. Keep it conversational. Avoid emojis. Ask a thoughtful follow-up when useful."
+            ></textarea>
+          </label>
+          <p
+            class="hint"
+            data-en="Each draft includes a Chinese explanation. Only the comment itself is filled into Reddit."
+            data-zh="每次生成附带中文解释，只有评论正文会填入 Reddit。"
+          ></p>
+        </section>
+        <div class="actions">
+          <button
+            type="submit"
+            data-en="Save settings & grant API access"
+            data-zh="保存设置并授权接口访问"
+          ></button
+          ><button
+            type="button"
+            id="clear"
+            class="secondary"
+            data-en="Remove saved key"
+            data-zh="清除密钥"
+          ></button>
+        </div>
+        <p id="status" role="status" aria-live="polite"></p>
+      </form>
+      <footer
+        data-en="When you click Generate on Reddit, the post and relevant comment text are sent directly to your configured provider. No developer server, analytics, or automatic posting."
+        data-zh="在 Reddit 点击生成时，帖子和相关评论文字会直接发送给你配置的模型服务。插件没有开发者中转服务器、分析追踪或自动发布功能。"
+      ></footer>
+    </main>
+    <script src="options.js"></script>
+  </body>
+</html>

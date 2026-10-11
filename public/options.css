@@ -1,0 +1,167 @@
+:root {
+  font:
+    15px/1.6 system-ui,
+    -apple-system,
+    sans-serif;
+  color: #26313c;
+  background: #f5f4f0;
+  color-scheme: light dark;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+main {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 54px 24px;
+}
+header {
+  margin-bottom: 32px;
+}
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: 750;
+  color: #be3606;
+}
+h1 {
+  font-size: clamp(26px, 5vw, 36px);
+  line-height: 1.2;
+  letter-spacing: -1px;
+  margin: 14px 0;
+}
+header p {
+  color: #62717c;
+}
+section {
+  border: 1px solid #dddeda;
+  border-radius: 16px;
+  padding: 24px;
+  background: #fff;
+  margin-bottom: 18px;
+}
+h2 {
+  font-size: 18px;
+  margin: 0 0 20px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 18px;
+}
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 650;
+  margin-bottom: 16px;
+}
+input,
+select,
+textarea {
+  display: block;
+  width: 100%;
+  font: 400 14px/1.5 system-ui;
+  background: #fff;
+  color: #26313c;
+  border: 1px solid #bfc9ce;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-top: 6px;
+}
+textarea {
+  resize: vertical;
+}
+.check {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+}
+.check input {
+  width: 16px;
+  margin: 0;
+}
+.hint,
+footer {
+  font-size: 12px;
+  color: #65727a;
+}
+.hint {
+  margin-bottom: 0;
+}
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+button {
+  font: 600 14px system-ui;
+  border: 1px solid #d93900;
+  background: #d93900;
+  color: white;
+  padding: 13px 18px;
+  border-radius: 24px;
+  cursor: pointer;
+}
+.secondary {
+  background: transparent;
+  color: inherit;
+  border-color: #bec6c9;
+}
+button:disabled {
+  opacity: 0.5;
+}
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible {
+  outline: 2px solid #1284bd;
+  outline-offset: 3px;
+}
+#status {
+  min-height: 24px;
+}
+footer {
+  padding-top: 20px;
+  border-top: 1px solid #d9dddf;
+}
+@media (max-width: 520px) {
+  main {
+    padding: 26px 16px;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  section {
+    padding: 18px;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    background: #11191d;
+    color: #e3e8ed;
+  }
+  section {
+    background: #192329;
+    border-color: #36444a;
+  }
+  input,
+  select,
+  textarea {
+    background: #111b21;
+    color: #e3e8ed;
+    border-color: #4c5e69;
+  }
+  .hint,
+  footer,
+  header p {
+    color: #a1b0b9;
+  }
+  .eyebrow {
+    color: #ff9166;
+  }
+}

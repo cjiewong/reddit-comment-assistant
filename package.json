@@ -1,0 +1,36 @@
+{
+  "name": "reddit-comment-assistant",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Bring your own AI model to draft Reddit replies with Chinese explanations.",
+  "license": "MIT",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "package": "npm run build && node scripts/package.mjs",
+    "format": "prettier --write src tests scripts public *.json *.md .github/workflows/*.yml",
+    "preview": "npm run build && node scripts/preview.mjs"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.287",
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.25.0",
+    "jsdom": "^26.0.0",
+    "prettier": "^3.9.10",
+    "typescript": "^5.8.0",
+    "vitest": "^4.1.11"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cjiewong/reddit-comment-assistant.git"
+  },
+  "homepage": "https://github.com/cjiewong/reddit-comment-assistant#readme",
+  "bugs": {
+    "url": "https://github.com/cjiewong/reddit-comment-assistant/issues"
+  }
+}
